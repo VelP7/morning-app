@@ -11,6 +11,15 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #09090b; 
+            /* ЗАЩИТА: Отключаем выделение текста везде... */
+            -webkit-user-select: none;
+            user-select: none; 
+        }
+
+        /* ...кроме поля ввода, чтобы человек мог стирать и выделять свой текст */
+        input {
+            -webkit-user-select: text;
+            user-select: text;
         }
 
         .fade-transition { transition: opacity 1s ease-in-out; }
@@ -152,7 +161,6 @@
         let appState = 'breathing';
 
         window.onload = () => {
-            // ИСПРАВЛЕНИЕ ЗДЕСЬ: Безопасный перенос строки
             const formattedText = currentText.replace('. ', '.<br><br>');
             textContainer.innerHTML = formattedText;
             
@@ -235,7 +243,19 @@
             }, 1000);
         }
         
+        // ЗАЩИТА И ЛОГИКА КЛАВИАТУРЫ
         document.addEventListener("keydown", function(event) {
+            // Защита от горячих клавиш копирования/просмотра кода
+            if (event.key === 'F12' || 
+               (event.ctrlKey && event.shiftKey && event.key === 'I') || 
+               (event.metaKey && event.altKey && event.key === 'I') || 
+               (event.ctrlKey && event.key === 'u') || (event.metaKey && event.key === 'u') || 
+               (event.ctrlKey && event.key === 's') || (event.metaKey && event.key === 's') || 
+               (event.ctrlKey && event.key === 'c') || (event.metaKey && event.key === 'c')) {
+                event.preventDefault();
+            }
+
+            // Логика кнопки Enter
             if (event.key === "Enter") {
                 if (appState === 'affirmation_ready') {
                     event.preventDefault();
@@ -246,6 +266,9 @@
                 }
             }
         });
+
+        // ЗАЩИТА: Блокировка правой кнопки мыши
+        document.addEventListener('contextmenu', event => event.preventDefault());
     </script>
 </body>
 </html>
