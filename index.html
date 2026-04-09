@@ -107,4 +107,145 @@
             "Сегодня я практикую искусство маленьких шагов. Мне не нужно видеть всю лестницу, чтобы подняться на одну ступеньку.",
             "Я отпускаю потребность быть всегда правым. Моя цель сегодня - решить задачу и двигаться дальше, а не кормить свое Эго.",
             "Страх перед неудачей - это просто иллюзия ума. Я иду навстречу своему страху, потому что именно там спрятан мой потенциал.",
-            "Я
+            "Я искренне благодарю за то, что имею сейчас, и искренне сделаю то, что должен сделать сегодня.",
+            "Усталость - это сигнал к отдыху, а не к сдаче. Я даю себе право на паузу, чтобы потом ударить с новой силой.",
+            "Мои мысли - это инструменты. Я оставляю только те, которые помогают мне строить, и без сожаления выбрасываю те, что разрушают.",
+            "Я не требую от мира справедливости. Я навожу порядок там, к чему имеют доступ мои руки.",
+            "Моя сила в моей уязвимости. Признать свое незнание - значит открыть разум для нового опыта. Я готов учиться сегодня.",
+            "Ничто не длится вечно: ни успех, ни провал. Я сохраняю ровное отношение к победам и поражениям, продолжая делать свое дело.",
+            "Сегодня я говорю «нет» всему, что не соответствует моим главным ценностям. Мое «нет» освобождает пространство для настоящего.",
+            "Я перестаю бороться с реальностью и начинаю с ней танцевать. Я использую силу сопротивления среды для собственного ускорения.",
+            "Каждое слово, сказанное мной сегодня, должно быть либо правдивым, либо добрым, либо полезным. Иначе я выбираю молчание.",
+            "Мой разум ясен, мое тело готово, моя воля подчинена смыслу. Я полностью присутствую в сегодняшнем дне.",
+            "Я - не мои мысли, я - тот, кто за ними наблюдает. Из этой точки тишины я начинаю свой день и делаю свой главный шаг."
+        ];
+
+        const actionPrompts = [
+            "С каким намерением ты входишь в этот день?",
+            "На чем ты сфокусируешь свое внимание сегодня?"
+        ];
+
+        let currentStreak = parseInt(localStorage.getItem('embody_streak')) || 0;
+        const lastEntryDate = localStorage.getItem('embody_last_date');
+        const todayDate = new Date().toDateString();
+        let historyForAI = JSON.parse(localStorage.getItem('embody_history_ai')) || [];
+
+        const textIndex = currentStreak % journeyTexts.length;
+        const currentText = journeyTexts[textIndex];
+        
+        const promptIndex = currentStreak % 2;
+        const currentPrompt = actionPrompts[promptIndex];
+
+        const screenBreathing = document.getElementById('screen-breathing');
+        const screenAffirmation = document.getElementById('screen-affirmation');
+        const screenAction = document.getElementById('screen-action');
+        const screenOutro = document.getElementById('screen-outro');
+        
+        const textContainer = document.getElementById('daily-text-container');
+        const promptTextContainer = document.getElementById('action-prompt-text');
+        
+        const btnResponsibility = document.getElementById('btn-responsibility-container');
+        const actionInput = document.getElementById('action-input');
+        const streakDisplay = document.getElementById('streak-display');
+        const breathingText = document.getElementById('breathing-text');
+
+        let appState = 'breathing';
+
+        window.onload = () => {
+            // ИСПРАВЛЕНИЕ ЗДЕСЬ: Безопасный перенос строки
+            const formattedText = currentText.replace('. ', '.<br><br>');
+            textContainer.innerHTML = formattedText;
+            
+            promptTextContainer.innerText = currentPrompt; 
+
+            setTimeout(() => {
+                breathingText.style.opacity = '0';
+                setTimeout(() => {
+                    breathingText.innerText = 'ВЫДОХ';
+                    breathingText.style.opacity = '1';
+                }, 500); 
+            }, 3500);
+
+            setTimeout(() => {
+                screenBreathing.style.opacity = '0';
+                setTimeout(() => {
+                    screenBreathing.classList.add('hidden');
+                    screenAffirmation.classList.remove('pointer-events-none');
+                    screenAffirmation.style.opacity = '1';
+                    
+                    setTimeout(() => {
+                        btnResponsibility.style.opacity = '1';
+                        appState = 'affirmation_ready';
+                    }, 4000);
+                }, 1000);
+            }, 10000); 
+        };
+
+        function goToAction() {
+            if (appState !== 'affirmation_ready') return;
+            appState = 'action_screen';
+
+            screenAffirmation.style.opacity = '0';
+            screenAffirmation.classList.add('pointer-events-none');
+            setTimeout(() => {
+                screenAction.classList.remove('pointer-events-none');
+                screenAction.style.opacity = '1';
+                setTimeout(() => actionInput.focus(), 500);
+            }, 1000);
+        }
+
+        function finishMorning() {
+            const userAction = actionInput.value.trim(); 
+            if (!userAction) return; 
+            
+            if (lastEntryDate !== todayDate) {
+                currentStreak++;
+                
+                const aiDataPacket = {
+                    date: todayDate,
+                    dayOfChallenge: currentStreak,
+                    philosophyText: currentText, 
+                    askedQuestion: currentPrompt, 
+                    userCommitment: userAction
+                };
+                historyForAI.push(aiDataPacket);
+
+                localStorage.setItem('embody_streak', currentStreak);
+                localStorage.setItem('embody_last_date', todayDate);
+                localStorage.setItem('embody_history_ai', JSON.stringify(historyForAI));
+            }
+
+            streakDisplay.innerText = `День ${currentStreak}`;
+
+            screenAction.style.opacity = '0';
+            screenAction.classList.add('pointer-events-none');
+            
+            setTimeout(() => {
+                screenOutro.classList.remove('pointer-events-none');
+                screenOutro.style.opacity = '1';
+                
+                setTimeout(() => {
+                    document.getElementById('outro-content').style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        document.getElementById('final-whisper').style.opacity = '1';
+                    }, 1000);
+                }, 4000);
+
+            }, 1000);
+        }
+        
+        document.addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                if (appState === 'affirmation_ready') {
+                    event.preventDefault();
+                    goToAction();
+                } else if (appState === 'action_screen' && document.activeElement === actionInput) {
+                    event.preventDefault();
+                    finishMorning();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
