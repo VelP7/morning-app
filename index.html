@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title> Начало </title>
+    <title>Начало</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&display=swap');
@@ -45,14 +45,15 @@
             </p>
         </div>
 
-        <div id="screen-affirmation" class="absolute inset-0 flex flex-col items-center justify-center px-6 z-30 opacity-0 pointer-events-none fade-transition bg-[#09090b]">
-            <div class="w-full flex flex-col items-center space-y-12">
+        <div id="screen-affirmation" class="absolute inset-0 flex flex-col justify-center px-6 z-30 opacity-0 pointer-events-none fade-transition bg-[#09090b]">
+            <div class="flex-grow flex flex-col items-center justify-center">
                 <p id="daily-text-container" class="text-xl font-light leading-relaxed text-center text-zinc-300 w-full px-2"></p>
-                
-                <div class="w-full opacity-0 fade-transition" id="btn-responsibility-container">
-                    <button onclick="goToAction()" class="w-full glass-btn hover:bg-zinc-800 text-zinc-300 font-light tracking-wide py-4 rounded-lg transition-all text-sm uppercase">
-    Принимаю ответственность </button>
-                </div>
+            </div>
+            
+            <div class="pb-12 w-full opacity-0 fade-transition" id="btn-responsibility-container">
+                <button onclick="goToAction()" class="w-full glass-btn hover:bg-zinc-800 text-zinc-300 font-light tracking-wide py-4 rounded-lg transition-all text-sm uppercase">
+                    Принимаю ответственность
+                </button>
             </div>
         </div>
 
@@ -142,11 +143,14 @@
         const streakDisplay = document.getElementById('streak-display');
         const breathingText = document.getElementById('breathing-text');
 
-        // Переменная состояния приложения (чтобы Enter работал вовремя)
         let appState = 'breathing';
 
         window.onload = () => {
-            textContainer.innerText = currentText;
+            // ИЗМЕНЕНО: Автоматическое разбиение текста на два абзаца
+            // Ищем первую точку с пробелом и заменяем ее на перенос строки + отступ
+            const formattedText = currentText.replace('. ', '.<br><span class="block mt-5"></span>');
+            textContainer.innerHTML = formattedText;
+            
             promptTextContainer.innerText = currentPrompt; 
 
             setTimeout(() => {
@@ -166,7 +170,6 @@
                     
                     setTimeout(() => {
                         btnResponsibility.style.opacity = '1';
-                        // Разрешаем нажимать Enter
                         appState = 'affirmation_ready';
                     }, 4000);
                 }, 1000);
@@ -174,7 +177,6 @@
         };
 
         function goToAction() {
-            // Защита от двойных нажатий
             if (appState !== 'affirmation_ready') return;
             appState = 'action_screen';
 
@@ -218,15 +220,12 @@
             }, 1000);
         }
         
-        // Глобальный слушатель клавиатуры
         document.addEventListener("keydown", function(event) {
             if (event.key === "Enter") {
                 if (appState === 'affirmation_ready') {
-                    // Если мы на втором экране и кнопка появилась — идем дальше
                     event.preventDefault();
                     goToAction();
                 } else if (appState === 'action_screen' && document.activeElement === actionInput) {
-                    // Если мы на третьем экране и вводим текст — завершаем сессию
                     event.preventDefault();
                     finishMorning();
                 }
