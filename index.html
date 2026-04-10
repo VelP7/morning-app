@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Начало (Настройка)</title>
+    <title>Начало V1</title>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Начало">
+    <meta name="apple-mobile-web-app-title" content="Начало (Dark)">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="icon.png">
 
@@ -82,12 +82,6 @@
                 <p id="action-prompt-text" class="text-lg font-medium mb-12 text-center text-zinc-500"></p>
                 <input type="text" id="action-input" placeholder="" class="w-full bg-transparent border-b border-zinc-700 focus:border-zinc-400 text-2xl pb-3 text-center text-zinc-200 transition-colors placeholder-zinc-700" autocomplete="off">
             </div>
-            
-            <div class="pb-12 w-full">
-                <button onclick="finishMorning()" class="w-full bg-zinc-200 hover:bg-white text-zinc-900 font-medium py-4 rounded-lg transition-colors text-sm uppercase tracking-wide shadow-lg">
-                    Начать день
-                </button>
-            </div>
         </div>
 
         <div id="screen-outro" class="absolute inset-0 flex flex-col items-center justify-center z-10 opacity-0 pointer-events-none fade-transition bg-[#09090b]">
@@ -114,7 +108,7 @@
             "Тревога питается мыслями о будущем. Я возвращаю себя в настоящее: здесь и сейчас есть только задача перед моими глазами.",
             "Ошибки не определяют мою ценность, они лишь показывают, где мне нужно стать точнее. Я отказываюсь от иллюзии идеала и продолжаю идти.",
             "Я не могу управлять ветром, но я управляю парусами. Пусть обстоятельства меняются, мое внутреннее ядро остается неподвижным.",
-            "Сегодня я выбираю дисциплину вместо быстрых удовольствий. Осознанный дискомфорт сейчас - это тренировка моей внутренней силы.",
+            "Сегодня я выбираю дисциплину вместо быструд pleasures. Осознанный дискомфорт сейчас - это тренировка моей внутренней силы.",
             "Сравнение себя с другими крадет мою силу. Мой единственный ориентир сегодня - моя вчерашняя версия.",
             "Никто не придет, чтобы сделать мою работу за меня. Я беру полную ответственность за то место, где я нахожусь сегодня.",
             "Я отказываюсь от ожиданий быстрых аплодисментов. Мой труд имеет ценность сам по себе, я делаю его ради процесса, а не ради оценки.",
@@ -261,7 +255,7 @@
             }, 1000);
         }
         
-        // Защита от копирования и горячих клавиш
+        // Защита и навигация с клавиатуры
         document.addEventListener("keydown", function(event) {
             if (event.key === 'F12' || 
                (event.ctrlKey && event.shiftKey && event.key === 'I') || 
